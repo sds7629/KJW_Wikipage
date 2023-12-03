@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from django.contrib.postgres.fields import ArrayField
 
 
+# 60퍼센트를 초과하여 사용된 단어와 40퍼센트 이하로 사용된 단어의 쿼리를 사용하기 위해 따로 Manager를 만들었습니다.
 class UnderSixty(models.QuerySet):
     def under(self) -> QuerySet:
         return self.filter(percent__lte=60)

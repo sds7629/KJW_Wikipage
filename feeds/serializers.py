@@ -9,6 +9,7 @@ class ListFeedSerializer(serializers.ModelSerializer):
         model = Feed
         fields = ("pk", "title", "rel_feed", "created_at")
 
+    # 연관된 게시글을 view에서 보내준 instance annotate를 이용하기 위해 따로 선언해 주었습니다.
     def get_rel_feed(self, instance):
         result = [
             {

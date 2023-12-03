@@ -20,6 +20,7 @@ class FeedViewSet(
     CreateModelMixin,
     GenericViewSet,
 ):
+    # 쿼리를 불러올 때 연관 게시글의 중복 hit를 없애기 위해 prefetch를 통해 미리 가져오는 코드르 작성했습니다.
     queryset = Feed.objects.all().prefetch_related(
         Prefetch(
             "rel_from_feed",
@@ -34,18 +35,22 @@ class FeedViewSet(
     )
     serializer_class = serializers.ListFeedSerializer
 
+    # 시리얼 라이저를 http method에 따라 변경되도록 설정했습니다.
     def get_serializer_class(self) -> QuerySet:
         if self.action in ["list", "retrieve"]:
             return serializers.ListFeedSerializer
         else:
             return serializers.CreateFeedSerializer
 
+    # GET METHOD
     def list(self, request, *args, **kwargs) -> QuerySet:
         return super().list(request, *args, **kwargs)
 
+    # Detail GET METHOD
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    # POST METHOD
     def create(self, request, *args, **kwargs) -> QuerySet:
         serializer = serializers.CreateFeedSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -61,6 +66,3 @@ class FeedViewSet(
         create_relfeed(pay_data, new_feed)
         update_percent(pay_data, all_data)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# Create your views here.
